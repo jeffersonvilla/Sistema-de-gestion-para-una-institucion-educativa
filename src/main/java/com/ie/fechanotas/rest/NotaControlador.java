@@ -3,6 +3,8 @@ package com.ie.fechanotas.rest;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import javax.persistence.EntityNotFoundException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,8 +22,6 @@ import com.ie.fechanotas.business.UsuarioServicio;
 import com.ie.fechanotas.domain.UsuarioNotaDto;
 import com.ie.fechanotas.model.Nota;
 import com.ie.fechanotas.model.Usuario;
-
-import jakarta.persistence.EntityNotFoundException;
 
 @RestController
 @RequestMapping("/nota")
@@ -64,6 +64,7 @@ public class NotaControlador {
 				return new ResponseEntity<Nota>(notaServicio.insertar(nota), HttpStatus.CREATED);
 			}catch (Exception e) {
 				e.printStackTrace();
+				System.out.println(e.getMessage());
 			}
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
@@ -80,8 +81,12 @@ public class NotaControlador {
 				return new ResponseEntity<Nota>(notaServicio.actualizar(nota), HttpStatus.OK);
 			}catch (EntityNotFoundException e) {
 				e.printStackTrace();
+				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			}catch (Exception e) {
+				System.out.println(e.getMessage());
+				return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 			}
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			
 		}
 		return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 	}
